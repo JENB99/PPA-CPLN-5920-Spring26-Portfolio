@@ -464,7 +464,7 @@ kable(final_recommendations,
 #Specific breakdown
 
 # High Confidence Counties
-high_conf <- recommendations %>%
+high_conf <- final_recommendations %>%
   filter(reliability == "High Confidence") %>%
   kable(col.names = c("County", "Median Income", "MOE %", "Reliability", "Recommendation"),
         caption = "Counties Suitable for Algorithmic Implementation",
@@ -472,7 +472,7 @@ high_conf <- recommendations %>%
         format.args = list(big.mark = ","))
 
 # Moderate Confidence Counties
-mod_conf <- recommendations %>%
+mod_conf <- final_recommendations %>%
   filter(reliability == "Moderate Confidence") %>%
   kable(col.names = c("County", "Median Income", "MOE %", "Reliability", "Recommendation"),
         caption = "Counties Requiring Additional Oversight",
@@ -480,7 +480,7 @@ mod_conf <- recommendations %>%
         format.args = list(big.mark = ","))
 
 # Low Confidence Counties
-low_conf <- recommendations %>%
+low_conf <- final_recommendations %>%
   filter(reliability == "Low Confidence") %>%
   kable(col.names = c("County", "Median Income", "MOE %", "Reliability", "Recommendation"),
         caption = "Counties Needing Alternative Approaches",
