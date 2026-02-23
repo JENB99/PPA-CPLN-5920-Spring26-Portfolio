@@ -46,11 +46,14 @@ Load the required spatial data:
 - Pennsylvania census tracts
 
 **Your Task:**
-```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide' 
+```{r} 
+#| message: false
+#| warning: false
+#| results: 'hide' 
+
 
 # Load required packages
 library(sf)
@@ -104,7 +107,6 @@ Use `tidycensus` to download tract-level demographic data for Pennsylvania.
 
 **Your Task:**
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -271,7 +273,6 @@ Identify census tracts with vulnerable populations based on TWO criteria:
 
 **Your Task:**
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -328,7 +329,6 @@ Based on the defition provided, not even 1% of all census tracts are considered 
 
 
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -367,7 +367,7 @@ round(nrow(vulnerable_tracts2) / nrow(tract_data) * 100, 2)
 
 
 ```
-Although it is still less than one percent, the total number of tracts did increase by about 10 from 14 to 24. 
+# Although it is still less than one percent, the total number of tracts did increase by about 10 from 14 to 24. 
 ---
 
 
@@ -444,7 +444,6 @@ Define "underserved" as vulnerable tracts that are more than 15 miles from the n
 
 **Your Task:**
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -481,7 +480,6 @@ Use spatial joins and aggregation to calculate county-level statistics about vul
 
 **Your Task:**
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -551,7 +549,6 @@ Create a professional table showing the top 10 priority counties for healthcare 
 
 **Your Task:**
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -601,7 +598,6 @@ Create a choropleth map showing healthcare access challenges at the county level
 
 **Your Task:**
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -690,7 +686,6 @@ Create a map highlighting underserved vulnerable tracts.
 
 **Your Task:**
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -764,7 +759,6 @@ Create a visualization showing the distribution of distances to hospitals for vu
 
 **Your Task:**
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -944,7 +938,6 @@ Choose ONE of the following challenge exercises, or propose your own research qu
 ---
 
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -1011,7 +1004,6 @@ Note. To make it easier for the data analyst, new code chunks were made for each
 
 **Your Task:**
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -1037,7 +1029,6 @@ phl_tracts <- census_tracts1 %>%
 
 
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -1054,7 +1045,6 @@ phl_tracts_data <- phl_tracts %>%
 
 
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -1079,7 +1069,6 @@ phl_tracts_data <- phl_tracts_data %>%
 
 
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -1113,7 +1102,6 @@ phl_tracts_proj <- phl_tracts_proj %>%
 
 
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -1141,7 +1129,6 @@ ggplot() +
 
 
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -1175,7 +1162,6 @@ phl_tracts_proj <- phl_tracts_proj %>%
 
 
 ```{r}
-
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -1239,7 +1225,7 @@ The fist lab was not uploaded successfully. As a result, I deleted my existing p
 
 ##Self Reflection
 
-Moving forward, for future labs, I will need to be better organized with the data and follow the worflows from class. Specifically, keeping data sets clean after joining multiple ones and being able to understand what's going on even before coding graphs, which, in this lab, have helped me understand what the outcomes of the operations I've done are. Additionally, I have printed each weeks codes to write my own notes on top to help conceptualize the technical aspects, as well as some policy-specific considerations. 
+Moving forward, for future labs, I will need to be better organized with the data and follow the worflows from class. Specifically, keeping data sets clean after joining multiple ones and being able to understand what's going on even before coding graphs, which, in this lab, have helped me understand what the outcomes of the operations I've done are. Additionally, I have printed each weeks codes to write my own notes on top to help conceptualize the technical aspects, as well as some policy-specific considerations.
 
 ---
 
