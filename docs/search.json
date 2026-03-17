@@ -285,5 +285,75 @@
     "title": "Lab 1: Census Data Quality for Policy Decisions",
     "section": "Submission Checklist",
     "text": "Submission Checklist\nBefore submitting your portfolio link on Canvas:\n\nAll code chunks run without errors\nAll “[Fill this in]” prompts have been completed\nTables are properly formatted and readable\nExecutive summary addresses all four required components\nPortfolio navigation includes this assignment\nCensus API key is properly set\nDocument renders correctly to HTML\n\nRemember: Submit your portfolio URL on Canvas, not the file itself. Your assignment should be accessible at your-portfolio-url/labs/lab_1/your_file_name.html"
+  },
+  {
+    "objectID": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#data-sources",
+    "href": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#data-sources",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Data Sources",
+    "text": "Data Sources\n\nCity of Philadelphia - for Housing Data, n= 15,307, 2023 - 2024\nSales Price, Total Livable Area, No. of Bathrooms, Age\nAmerican Community Survey (2024) - for demographic data\nEducation, Poverty, Race, Vacancy\nOpen Data Philly - for spatial features\nCrime, Transit Stops, Parks"
+  },
+  {
+    "objectID": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#home-sale-price-by-block-group",
+    "href": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#home-sale-price-by-block-group",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Home Sale Price by Block Group",
+    "text": "Home Sale Price by Block Group\nNorthwest and Center City areas have the highest home sale prices"
+  },
+  {
+    "objectID": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#what-drives-prices",
+    "href": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#what-drives-prices",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "What Drives Prices?",
+    "text": "What Drives Prices?\nHistoric redlining grades overlap with current home sale prices"
+  },
+  {
+    "objectID": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#what-drives-prices-1",
+    "href": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#what-drives-prices-1",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "What Drives Prices?",
+    "text": "What Drives Prices?"
+  },
+  {
+    "objectID": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#model-comparison",
+    "href": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#model-comparison",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Model Comparison",
+    "text": "Model Comparison\n\n\n\n\n\nModel\nRMSE\nMAE\nR2\n\n\n\n\nStructural\n0.561\n0.419\n0.381\n\n\n+ Demographic\n0.440\n0.318\n0.619\n\n\n+ Spatial\n0.437\n0.316\n0.624\n\n\n+ Fixed Effects\n0.391\n0.267\n0.700"
+  },
+  {
+    "objectID": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#top-predictors",
+    "href": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#top-predictors",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Top Predictors",
+    "text": "Top Predictors\n\nLivable area: A 10% larger home sells for ~6.3% more\nNumber of bathrooms: Each additional bathroom adds ~19% to sale price\nRace: A block group 10 percentage points whiter is associated with homes selling for 4.1% more\nParks within 400m: Neighborhoods with double the park access see prices ~2.8% higher\nLog crime score: A 10% higher crime score is associated with 0.47% lower sale prices"
+  },
+  {
+    "objectID": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#model-performance",
+    "href": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#model-performance",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Model Performance",
+    "text": "Model Performance\nFinal Model with Neighborhood Fixed Effects\n\nRMSE to 0.3905 and explaining variance up to 70%.\nMedian Absolute Error is USD 42,994 against a median sale price of USD 250,000."
+  },
+  {
+    "objectID": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#model-performance-1",
+    "href": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#model-performance-1",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Model Performance",
+    "text": "Model Performance"
+  },
+  {
+    "objectID": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#limitations-next-steps",
+    "href": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#limitations-next-steps",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Limitations & Next Steps",
+    "text": "Limitations & Next Steps\n\nLimitation: One neighborhood where prices are systematically underestimated is Center City East, while the neighborhood where prices are overestimated is Fairhill, which needs to be further investigated.\nNext Steps: Jams & Co intends to enhance the model by conducting other model diagnostics, by analyzing factors such as spatial autocorrelation."
+  },
+  {
+    "objectID": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#recommendations",
+    "href": "lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.html#recommendations",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Recommendations",
+    "text": "Recommendations\n\nOur model is a holistic and comprehensive predicive model for home sale prices, and we recommend it be used to support property tax determination\nWe recommend supplementary screening and surveying for neighborhoods that are systematically under and over predicted by the model."
   }
 ]

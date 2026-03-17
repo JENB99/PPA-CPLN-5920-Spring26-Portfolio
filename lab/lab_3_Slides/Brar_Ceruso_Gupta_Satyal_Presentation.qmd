@@ -1,0 +1,378 @@
+---
+title: "Philadelphia Housing Price Prediction"
+subtitle: "Improving Property Tax Assessments"
+author: "Jams & Co | Jenny, Arzoo, Maude, Shubhanga "
+date: "17 March 2026"
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    chalkboard: true
+    code-line-numbers: true
+    incremental: false
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r}
+#|echo: false
+#|eval: false
+
+library(car)
+library(caret)
+library(ggplot2)
+library(kableExtra)
+library(knitr)
+library(lubridate) #used to clean housing data
+library(modelsummary)
+library(patchwork)
+library(RColorBrewer)
+library(scales)
+library(sf)
+library(stargazer) #for summaries
+library(tidycensus)
+library(tidyverse)
+library(tigris)
+```
+
+```{r}
+#|echo: false
+#|eval: false
+#|message: false
+#|warning: false
+#|results: 'hide'
+
+sale_price_byblockgroup_geo <- st_read("data/data_clean/sale_pricebyblockgroup_geo.geojson", quiet = TRUE)
+housing_census_geo_no_na <- read.csv("data/data_clean/housing_census_geo_no_na.csv")
+redlining_phl <- st_read("data/data_clean/redlining_phl.shp", quiet = T)
+dat_load <- read_csv("data/data_clean/dat.csv")
+n_hoods <- st_read("data/data_clean/n_hoods.shp", quiet = T)
+
+```
+
+# The Challenge
+
+Home Sales Price Prediction for Sales Tax: Philadelphia Office of
+Property Assessment
+
+## Data Sources
+
+-   **City of Philadelphia - for Housing Data, n= 15,307, 2023 - 2024**
+
+    Sales Price, Total Livable Area, No. of Bathrooms, Age
+
+-   **American Community Survey (2024) - for demographic data**
+
+    Education, Poverty, Race, Vacancy
+
+-   **Open Data Philly - for spatial features**
+
+    Crime, Transit Stops, Parks
+
+## Home Sale Price by Block Group
+
+Northwest and Center City areas have the highest home sale prices
+
+```{r}
+#|echo: false
+#|eval: false
+#Avg sales price per block group
+ggplot() +
+  geom_sf(data = sale_price_byblockgroup_geo, aes(fill = mean_price)) +
+  scale_fill_viridis_c(
+    name = "Mean Sale Price ($)",
+    option = "inferno",
+    na.value = "grey",
+    labels = scales::dollar
+  ) +
+  labs(
+    title = "Average Residential Sale Price by Block Group",
+    subtitle = "Philadelphia, 2023–2024 Sales",
+    caption = "Source: OPA Sales Data"
+  ) +
+  theme_void()
+```
+
+## What Drives Prices?
+
+Historic redlining grades overlap with current home sale prices
+
+```{r}
+#|echo: false
+#|eval: false
+#both maps combined with lower transparncy for avg sales/block group
+ggplot() +
+  geom_sf(data = sale_price_byblockgroup_geo, aes(fill = mean_price), 
+          color = "white", size = 0.01, alpha = 0.45) +
+  geom_sf(data = redlining_phl, aes(color = as.factor(grade)), 
+          fill = NA, size = 0.8) +
+  scale_fill_viridis_c(
+    name = "Mean Sale Price ($)",
+    option = "inferno",
+    na.value = "grey",
+    labels = scales::dollar
+  ) +
+  scale_color_manual(
+    name = "HOLC Grade",
+    values = c("0" = "grey", "1" = "green", "2" = "blue", "3" = "yellow", "4" = "red"),
+    labels = c("1" = "A", "2" = "B", "3" = "C", "4" = "D")
+  ) +
+  labs(
+    title = "Average Residential Sale Price by Block Group with Redlining Grades",
+    subtitle = "Philadelphia, 2023–2024 Sales",
+    caption = "Source: OPA Sales Data; HOLC Redlining Boundaries"
+  ) +
+  theme_void()
+```
+
+## What Drives Prices?
+
+```{r}
+#|echo: false
+#|eval: false
+#|message: false
+#|warning: false
+#|results: 'hide'
+
+
+
+#scatterplots for correlation between sale price and structural data
+housing_census_geo_no_na <- read.csv("data/data_clean/housing_census_geo_no_na.csv")
+
+#log sale price and number of bedrooms
+p1 <- ggplot(data = housing_census_geo_no_na) +
+  aes(x = number_of_bedrooms, y = log_sale_price) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = " Number of Bedrooms vs Log of Sales Price",
+       x = "Number of Bedrooms",
+       y = "Log Sales Price") +
+  theme_minimal()
+
+#log sale price and number of bathrooms 
+p2 <- ggplot(data = housing_census_geo_no_na) +
+  aes(x = number_of_bathrooms, y = log_sale_price) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "Number of Bathrooms vs Log of Sales Price",
+       x = "Number of Bathrooms",
+       y = "Log Sales Price") +
+  theme_minimal()
+
+#log sale price and total liveable area
+p3 <- ggplot(data = housing_census_geo_no_na) +
+  aes(x = total_livable_area, y = log_sale_price) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", color = "red", se = FALSE)+
+  labs (title = "Total Livable Area vs Log of Sales Price",
+        x = "Total Livable Area",
+         y = "Log of Sales Price") +
+theme_minimal()
+
+housing_census_geo_no_na$year_built <- as.numeric(housing_census_geo_no_na$year_built)
+
+
+#log sale price and year built
+
+#log sale price and share of residents with at least a bachelor's degree
+p5 <-  ggplot(data = housing_census_geo_no_na) +
+  aes(x = BACH_PROP, y = log_sale_price) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = " Bachelor's Degree vs Log of Sales Price",
+       x = "Bachelor's Degree Proportion",
+       y = "Log of Sales Price") +
+  theme_minimal()
+
+ p4 <- ggplot(data = dat_load) +
+  aes(x = age, y = log_sale_price.x) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = " Age of building vs Log of Sales Price",
+       x = "Age in Years",
+       y = "Log of Sales Price") +
+  theme_minimal()
+
+#google and claude (generate the code) and r blogs assisted for beautification and fitting
+combined_struc <- (p1 + p2 + p3 + p4 + p5)+
+  plot_layout(ncol = 2) &
+  theme(plot.title = element_text(size = 8),
+        axis.title = element_text(size = 7),
+        axis.text = element_text(size = 6))
+combined_struc
+
+```
+
+## Model Comparison
+
+```{r}
+#|echo: false
+#|eval: false
+#|message: false
+#|warning: false
+#|results: 'hide'
+
+ctrl <- trainControl(method = "cv", number = 10)
+
+
+#Model 1: Structural only
+structural <- lm(log_sale_price.x ~ age+ I(age^2) + number_of_bathrooms.x + 
+            log_liv_area, 
+          data = dat_load)
+
+
+#Model 2: + Demographic
+demographic <- lm(log_sale_price.x ~  age+ I(age^2) + number_of_bathrooms.x + 
+            log_liv_area + BACH_PROP + WHITE_PROP + Pov_Prop + 
+            Vacancy_Rate, 
+          data = dat_load)
+
+
+#Model 3: + Spatial
+spatial <- lm(log_sale_price.x ~  age+ I(age^2) + number_of_bathrooms.x + 
+            log_liv_area + BACH_PROP + WHITE_PROP + Pov_Prop + 
+            Vacancy_Rate + log_crime_score + near_transit + parks_400, 
+          data = dat_load)
+
+#Model 4: + Fixed Effects (chosen model)
+FE <- lm(log_sale_price.x ~ as.factor(name_cv) +  age+ I(age^2) + 
+            number_of_bathrooms.x + log_liv_area + BACH_PROP + WHITE_PROP + 
+            Pov_Prop + Vacancy_Rate + log_crime_score + near_transit + 
+            parks_400, 
+          data = dat_load)
+
+
+
+#setting up 10-fold cross validation - splitting data into 10 equal chunks
+ctrl <- trainControl(method = "cv", number = 10)
+
+# CV for all 4 models
+cv_str <- train(log_sale_price.x ~ age + I(age^2) + number_of_bathrooms.x + 
+                 log_liv_area,
+               data = dat_load, method = "lm", trControl = ctrl)
+
+cv_demo <- train(log_sale_price.x ~  age + I(age^2)  + number_of_bathrooms.x + 
+                 log_liv_area + BACH_PROP + WHITE_PROP + Pov_Prop + 
+                 Vacancy_Rate,
+               data = dat_load, method = "lm", trControl = ctrl)
+
+cv_spat <- train(log_sale_price.x ~  age + I(age^2)  + number_of_bathrooms.x + 
+                 log_liv_area + BACH_PROP + WHITE_PROP + Pov_Prop + 
+                 Vacancy_Rate + log_crime_score + near_transit + parks_400,
+               data = dat_load, method = "lm", trControl = ctrl)
+
+cv_fe<- train(log_sale_price.x ~ as.factor(name_cv) +  age + I(age^2)  + 
+                 number_of_bathrooms.x + log_liv_area + BACH_PROP + WHITE_PROP + 
+                 Pov_Prop + Vacancy_Rate + log_crime_score + near_transit + 
+                 parks_400,
+               data = dat_load, method = "lm", trControl = ctrl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Results table
+cv_results <- tibble(
+  Model   = c("Structural", "+ Demographic", "+ Spatial", "+ Fixed Effects"),
+  RMSE    = c(cv_str$results$RMSE, cv_demo$results$RMSE, 
+              cv_spat$results$RMSE, cv_fe$results$RMSE),
+  MAE     = c(cv_str$results$MAE,  cv_demo$results$MAE,  
+              cv_spat$results$MAE,  cv_fe$results$MAE),
+  R2      = c(cv_str$results$Rsquared, cv_demo$results$Rsquared, 
+              cv_spat$results$Rsquared, cv_fe$results$Rsquared)
+) %>%
+  kable(digit = 3) %>%
+  kable_styling(full_width = F, position = "center")
+
+cv_results
+
+```
+
+## Top Predictors
+
+1.  **Livable area**: A 10% larger home sells for \~6.3% more
+2.  **Number of bathrooms**: Each additional bathroom adds \~19% to sale
+    price
+3.  **Race:** A block group 10 percentage points whiter is associated
+    with homes selling for 4.1% more
+4.  **Parks within 400m**: Neighborhoods with double the park access see
+    prices \~2.8% higher
+5.  **Log crime score**: A 10% higher crime score is associated with
+    0.47% lower sale prices
+
+## Model Performance
+
+**Final Model with Neighborhood Fixed Effects**
+
+1.  RMSE to 0.3905 and explaining variance up to 70%.
+2.  Median Absolute Error is USD 42,994 against a median sale price of
+    USD 250,000.
+
+## Model Performance
+
+```{r}
+#calculating residuals
+dat <- dat_load %>%
+  mutate(residual = log_sale_price.x - predicted)
+
+#aggregating to neighborhood level
+residuals_by_hood <- dat_load %>%
+  group_by(name_cv) %>%
+  summarise(mean_residual = mean(residual, na.rm = TRUE),
+            n = n()) %>%
+  ungroup()
+
+#joining back to neighborhood shapefile
+n_hoods_residuals <- n_hoods %>%
+  left_join(residuals_by_hood, by = c("Name" = "name_cv"))
+
+#mapping it
+ggplot() +
+  geom_sf(data = n_hoods_residuals, 
+          aes(fill = mean_residual)) +
+  scale_fill_gradient2(
+    low      = "lightgreen",
+    mid      = "orange", 
+    high     = "tomato",
+    midpoint = 0,
+    name     = "Mean Residual"
+  ) +
+  labs(
+    title    = "Where Does Our Model Struggle?",
+    subtitle = "Mean Prediction Residual by Neighborhood",
+    caption  = "Red = model underestimates price | Green = model overestimates price"
+  ) +
+  theme_void()
+
+```
+
+## Limitations & Next Steps
+
+-   Limitation: One neighborhood where prices are systematically
+    underestimated is Center City East, while the neighborhood where
+    prices are overestimated is Fairhill, which needs to be further
+    investigated.
+
+-   Next Steps: Jams & Co intends to enhance the model by conducting
+    other model diagnostics, by analyzing factors such as spatial
+    autocorrelation.
+
+## Recommendations
+
+-   Our model is a holistic and comprehensive predicive model for home
+    sale prices, and we recommend it be used to support property tax
+    determination
+
+-   We recommend supplementary screening and surveying for neighborhoods
+    that are systematically under and over predicted by the model.
+
+# Thank you.
