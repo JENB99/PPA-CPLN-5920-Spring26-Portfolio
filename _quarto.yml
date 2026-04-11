@@ -18,8 +18,6 @@ website:
             text: "Lab 2: Spatial Analysis and Visualization"
           - href: lab/lab_3_Slides/Brar_Ceruso_Gupta_Satyal_Presentation.qmd
             text: "Lab 3: Predicting Home Sales Price"
-          - href: lab/lab_3_Appendix/Brar_Ceruso_Gupta_Satyal_March_Appendix.qmd
-            text: "Lab 3: Predicting Home Sales Price"
           - href: lab/lab_4/lab_4.qmd
             text: "Lab 4: Spatial Predictive Modeling of Residential Burglary Using 311 Service Request Data (Garbage Cans) in Chicago"
             

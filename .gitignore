@@ -38,3 +38,9 @@ Thumbs.db
 *~
 /.quarto/
 **/*.quarto_ipynb
+
+
+# =======================
+# Large Data Files
+# =======================
+lab/lab_4/lab_4/data/garbagecart.csv
