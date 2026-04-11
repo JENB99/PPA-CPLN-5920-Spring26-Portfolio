@@ -109,20 +109,27 @@ cat("  - Police beats:", nrow(policeBeats), "\n")
 # Load from provided data file (downloaded from Chicago open data portal)
 burglaries <- st_read(here("lab/lab_4/lab_4/data/burglaries.shp")) %>% 
   st_transform('ESRI:102271')
+```
 
+
+```{r}
+#| message: false
+#| warning: false
 glimpse(burglaries)
 
-# Check the data
 cat("\n✓ Loaded burglary data\n")
 cat("  - Number of burglaries:", nrow(burglaries), "\n")
 cat("  - CRS:", st_crs(burglaries)$input, "\n")
 cat("  - Date range:", format(min(burglaries$Date, na.rm = TRUE)), "to", 
     format(max(burglaries$Date, na.rm = TRUE)), "\n")
-
 ```
+
+
+
 
 ```{r}
 #| message: false
+#| warning: false
 
 garbagecart <- read.csv(here("lab/lab_4/lab_4/data/garbagecart.csv"))
 
@@ -187,7 +194,7 @@ p1 + p2 +
   )
 ```
 
-#### Fishnet Grid Creation
+## Fishnet Grid Creation
 
 By creating a fishnet, we are essentially converting the point data from above to a grid format where we can count the points per grid or cell. From there we can calculate spatial features and then actually run regression as done below. It's importatnt to note that fishnets adress MAUP concerns, albeit selecting the right size is a challenge in and if itself. Nonetheless, the consistent cell size allows us to make more reliable comparisons across Chicago.
 
@@ -220,38 +227,24 @@ cat("  - Cell area:", round(st_area(fishnet[1,])), "square meters\n")
 Now that the fishnet has been created, we have to actually apply our exsiting data to it via spatial operations/ engineering (spatial joins). Here, each cell has a unique ID and then each point is allocated to it, creating a count per grid cell. The summary output displays the minimimum and maximum complaints per cell.The output idicates that about 20% of all cells have zeor complaints, where as the maximim complaints are over 100. When looking at the fishnet summary output for burglaries, we can see it also ranges from zero, but only to 40 incidents per cell. 
 
 ```{r}
-#now we want to aggregate our garbage counts into this area
-#st join here is for us to put each land in a fishnet square. if there is no point in a acell, that cell will get a 0
+#| message: false
+#| warning: false
 
-garbage_fishnet <- st_join(garbagecart, fishnet, join = st_within) %>% #attaches fishnet unique id to each point so every garbage cart obsersvation will have a unique ID
+garbage_fishnet <- st_join(garbagecart, fishnet, join = st_within) %>%
   st_drop_geometry() %>%
   group_by(uniqueID) %>%
   summarize(countGarbage = n())
 
-glimpse(garbage_fishnet)
-st_crs(garbage_fishnet)
-
-
-# check if garbage_fishnet has data after failed
-nrow(garbage_fishnet)
-names(garbage_fishnet)
-head(garbage_fishnet)
-
-
-#we want to join back to fishnet 
 fishnet <- fishnet %>%
   left_join(garbage_fishnet, by = "uniqueID") %>%
   mutate(countGarbage = replace_na(countGarbage, 0))
 
-# Summary statistics
 cat("\nMissing Garbage Cart distribution:\n")
 summary(fishnet$countGarbage)
 cat("\nCells with zero garbage cart complaints:", 
     sum(fishnet$countGarbage == 0), 
     "/", nrow(fishnet),
     "(", round(100 * sum(fishnet$countGarbage == 0) / nrow(fishnet), 1), "%)\n")
-
-
 ```
 
 ```{r}
@@ -296,14 +289,16 @@ ggplot() +
 
 ```
 
-#### Part 3: Spatial Features
+## Spatial Features
 
 Keeping this in mind, we also need a baseline for burglaries where the kernal density here is actually simliar to the garbage above, where the south also has gaps. This section essentially uses past burglaries and averages it across a surface using the sigma 1000 code, which is just a 1km bandwidth. The higher the value, the more burgaries have occured in that spot. In addition to this visual inspection, we also use the later on to determine if more complex models we'll build later do any better than this in predicting where burglaries will occur.
 
 The map shows clear strong concentrations in the north and a bit south, closer to the center.
 
 ```{r}
-# KDE is calculated on burglaries y
+#| message: false
+#| warning: false
+
 burglaries_ppp <- as.ppp(
   st_coordinates(burglaries),
   W = as.owin(st_bbox(chicagoBoundary))
@@ -328,7 +323,11 @@ fishnet <- fishnet %>%
   )
 
 cat("✓ Calculated KDE baseline\n")
+```
 
+```{r}
+#| fig-width: 8
+#| fig-height: 6
 
 ggplot() +
   geom_sf(data = fishnet, aes(fill = kde_value), color = NA) +
@@ -342,20 +341,16 @@ ggplot() +
     subtitle = "Simple spatial smoothing of burglary locations"
   ) +
   theme_crime()
-
-
 ```
 
 Further to capture more context that may be overlooked by the fishnet count, we also want to look at the average of the nearest 3 fishnets, since its possibel to have cells with more or less counts, but the proximity is important to note. When there is a low value that means there is less distance between garbage cart complaints and cells. Higher values might indicate that a particular cell is further away from complaints. Evidently, the range in the summary table is quite vast from just over 6.3 to almost 2300.
 
 ```{r}
 #| message: false
+#| warning: false
 
-#knn distance-Spatial features
-#here we want to see how close each cell is to closest event. if there is no land in a cell, but it is still close to a a bunch or cluster will still get some distance value to capture what the count is missing. 
-
-fishnet_coords <- st_coordinates(st_centroid(fishnet)) #for each fishnet cell how far is it from the nearest garbage cart complaint. we need a centroid for that cell
-garbage_coords  <- st_coordinates(garbagecart) #coords
+fishnet_coords <- st_coordinates(st_centroid(fishnet))
+garbage_coords  <- st_coordinates(garbagecart)
 
 nn_result <- get.knnx(garbage_coords, fishnet_coords, k = 3)
 
@@ -364,27 +359,20 @@ fishnet <- fishnet %>%
 
 cat("✓ Calculated nearest neighbor distances\n")
 summary(fishnet$garbage.nn)
-
 ```
 
 ```{r}
-#| fig-width: 8
-#| fig-height: 6
+#| message: false
+#| warning: false
 
-#Local Moran's I
-
-# Function to calculate Local Moran's I
 calculate_local_morans <- function(data, variable, k = 5) {
   
-  # Create spatial weights
   coords <- st_coordinates(st_centroid(data))
   neighbors <- knn2nb(knearneigh(coords, k = k))
   weights <- nb2listw(neighbors, style = "W", zero.policy = TRUE)
   
-  # Calculate Local Moran's I
- local_moran <- localmoran(as.numeric(data[[variable]]), weights)
+  local_moran <- localmoran(as.numeric(data[[variable]]), weights)
   
-  # Classify clusters
   mean_val <- mean(data[[variable]], na.rm = TRUE)
   
   data %>%
@@ -404,14 +392,16 @@ calculate_local_morans <- function(data, variable, k = 5) {
     )
 }
 
-# Apply to missing or stolen garbage carts
 fishnet <- calculate_local_morans(fishnet, "countGarbage", k = 5)
 
-nrow(fishnet)
+cat("✓ Local Moran's I complete\n")
+cat("  Hot spots (High-High):", sum(fishnet$moran_class == "High-High"), "\n")
+```
 
-#visualize morans i
+```{r}
+#| fig-width: 8
+#| fig-height: 6
 
-# Visualize hot spots
 ggplot() +
   geom_sf(
     data = fishnet, 
@@ -429,21 +419,20 @@ ggplot() +
     name = "Cluster Type"
   ) +
   labs(
-    title = "Local Moran's I: Vacant Land",
+    title = "Local Moran's I: Garbage Cart Complaints",
     subtitle = "High-High = Hot spots of disorder"
   ) +
   theme_crime()
-
 ```
 
 ```{r}
+#| message: false
+#| warning: false
 
-# Get centroids of "High-High" cells (hot spots)
 hotspots <- fishnet %>%
   filter(moran_class == "High-High") %>%
   st_centroid()
 
-# Calculate distance from each cell to nearest hot spot
 if (nrow(hotspots) > 0) {
   fishnet <- fishnet %>%
     mutate(
@@ -452,28 +441,29 @@ if (nrow(hotspots) > 0) {
       )
     )
   
-  cat("✓ Calculated distance to vacant land and buildings hot spots\n")
+  cat("✓ Calculated distance to garbage cart hot spots\n")
   cat("  - Number of hot spot cells:", nrow(hotspots), "\n")
 } else {
   fishnet <- fishnet %>%
     mutate(dist_to_hotspot = 0)
   cat("⚠ No significant hot spots found\n")
 }
-
 ```
 
 The Local Moran's I map above classifies each fishnet cell into one out of five categories based on how its garbage cart count compares to its surrounding neighbours. The red cells, or High-High clusters, are the hotspots where high complaints are surrounded by other high complaint cells. From the map, it is quite clear that these hotpots are concentrated in the northern, more west and a bit southern parts of the city the city, indicating these areas have cells with similar high complaints. The grey cells labelled "Not Significant" make up the majority of the map, which suggests that for many cells the spatial pattern of complaints. The blue Low-Low cells represent "cold spots", areas with consistently fewer complaints surrounded by the same, noticeable along the eastern edge and in some southern areas. There are a total of 332 hotspot in Chicago. 
 
 Following the Moran's I, we then calculated the distance from each cell to its nearest High-High hotspot. This gives us a third predictor  to captures not just how many complaints are nearby, but how close each cell is to the kernal areas of concentration. Cells closer to these hotspots may be at higher risk for burglary based on the broken windows idea groudning this analysis.
 
-#### Part 4: Count Regression Models
+##Count Regression Models
 
 To actually predict burglaries, we need a regression model. Since our outcome variable, countBurglaries, is a count rathern than continuous number, regular linear regression isn't appropriate here. Instead, we use count regression, starting with Poisson. The model takes three predictors, countGarbage, garbage.nn, and dist_to_hotspot , and estimates how each one relates to the expected number of burglaries per cell.
 
 However, it is important to note that Poisson regression comes with an important assumption: it assumes that the variance in the data equals the mean. But in reality, crime data likely will not meet this assumption. So, when the variance is much higher than the mean, the data is considered overdispersed and Poisson underestimates uncertainty in the model. To check for this, we calculated the dispersion parameter from the Poisson residuals. Anything 1.5 suggests overdispersion and needs more flexible model. As shown in the output, our dispersion, 3.45,  was well above this confirming that the Negative Binomial model is more appropriate since it adds an extra parameter specifically to handle this.
 
 ```{r}
-# remove District if already exists from previous run
+#| message: false
+#| warning: false
+
 if ("District" %in% names(fishnet)) {
   fishnet <- fishnet %>% dplyr::select(-District)
 }
@@ -533,13 +523,12 @@ if (dispersion > 1.5) {
 }
 
 
-
 ```
 
 ```{r}
+#| message: false
+#| warning: false
 
-
-# POISSON SHOWED DISPERSION OF 6.56 SO NEGATIVE BINOMIAL IS CORRECT MODEL TO USE
 model_nb <- glm.nb(
   countBurglaries ~ countGarbage + garbage.nn + dist_to_hotspot,
   data = fishnet_model
@@ -558,12 +547,14 @@ The AIC comparison above is used to determine which model fits the data better, 
 
 Looking at the coefficients in the summary output, we can also start to see the direction of each relationship. A positive coefficient for countGarbage would suggest that more garbage cart complaints in a cell are associated with more burglaries, which would be consistent with the broken windows theory. A negative coefficient for dist_to_hotspot would make sense too, since being further from a hotspot should be associated with fewer burglaries. Above we can see that all three are statistiacally signficant and the direction seems to be in line with the broken windows theory. For example, countGarbage has a postive relationship indicating that cells with more complaints are associated with more burglaries. Garbage.nn is the variable that looked at proximity to other complaints and thus a lower distance also have higher burglaries. 
 
-#### Part 5: Spatial Cross-Validation
+##Spatial Cross-Validation
 
 One of the most important parts of building any predictive model is testing whether it actually works on data it has not seen before. In other words, is is generalizable? Since in the regular cross validation model randomly split cells, the model could essentially memorize local patterns and appear to perform well without actually generalizing. So, instead, we use Leave-One-Group-Out (LOGO) spatial cross-validation, which holds out one entire police district at a time. The model trains on all remaining districts and then tries to predict burglaries ion the one left out . This is repeated for every district, giving us a better picture of how the model performs in areas it has never been trained on. The two error metrics we report are MAE (Mean Absolute Error), which tells us on average how many burglaries off our predictions are per cell, and RMSE which penalizes larger errors more heavily. Lower values for both indicate better model performance. Districts with particularly high MAE are worth noting, as those are the places our model struggles with the most, which can point to something about those neighbourhoods that our predictors are not capturing well.
 
 ```{r}
-# Get unique districts
+#| message: false
+#| warning: false
+
 districts <- unique(fishnet_model$District)
 cv_results <- tibble()
 
@@ -629,7 +620,7 @@ cv_results %>%
 
 The table above shows the MAE and RMSE for each district fold. Districts with higher MAE values are the ones where the model had the most difficulty predicting more reliably, and any spatial pattern in where those errors are concentrated would be worth exploring further in a more analysis. Out of the table above, the only district with the highest MAE and RMSE is district 3, however, there are additoinal distriacts with lower MAE and higher RMSE such as 6, 12, and 14. 
 
-#### Part 6: Model Evaluation
+## Model Evaluation
 
 The final step is to compare our model to the KDE baseline we created earlier. The KDE baseline is essentially the simplest possible prediction: it just smooths past burglary locations and assumes that crime will continue to happen where it happened before, with no other information. For our more complex model to be worth the effort, it has to do better than this simple baseline.
 
@@ -640,8 +631,8 @@ The performance metrics table then gives us numbers to compare. If our model MAE
 
 
 ```{r}
-# FIXED: REPLACED abandoned_cars AND abandoned_cars.nn WITH countGarbage AND garbage.nn
-# THESE WERE LEFTOVER FROM THE CLASS EXERCISE TEMPLATE - WRONG VARIABLE NAMES FOR THIS LAB
+#| message: false
+#| warning: false
 
 final_model <- glm.nb(
   countBurglaries ~ countGarbage + garbage.nn + dist_to_hotspot,
@@ -695,7 +686,7 @@ p1 + p2 + p3 +
 ```
 
 ```{r}
-# Calculate performance metrics
+# Calculate performance 
 comparison <- fishnet %>%
   st_drop_geometry() %>%
   filter(!is.na(prediction_nb), !is.na(prediction_kde)) %>%
@@ -720,8 +711,8 @@ comparison %>%
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
+#| warning: false
 
-# Calculate errors
 fishnet <- fishnet %>%
   mutate(
     error_nb = countBurglaries - prediction_nb,
