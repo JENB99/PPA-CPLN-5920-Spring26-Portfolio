@@ -20,6 +20,8 @@ website:
             text: "Lab 3: Predicting Home Sales Price"
           - href: lab/lab_4/lab_4.qmd
             text: "Lab 4: Spatial Predictive Modeling of Residential Burglary Using 311 Service Request Data (Garbage Cans) in Chicago"
+          - href: lab/lab_5/lab_5.qmd
+            text: "Lab 5: Bikeshare SpaceTime Prediction"
             
             
 
