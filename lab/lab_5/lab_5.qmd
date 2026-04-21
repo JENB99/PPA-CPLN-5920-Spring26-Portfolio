@@ -1,7 +1,7 @@
 ---
 title: "Bikeshare_SpaceTime_Prediction"
 subtitle: "CPLN 5080 - Spring 2026"
-author: "Your Name"
+author: "Jenny"
 date: today
 format:
   html:
@@ -1146,7 +1146,7 @@ p3 <- ggplot(station_errors_demo, aes(x = Percent_White, y = MAE)) +
 
 
 
-## Q4 Analysis (Lab 5)
+#Q4 Analysis (Lab 5)
 
 ```{r load-indegoQ4}
 #| message: false
