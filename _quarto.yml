@@ -22,6 +22,8 @@ website:
             text: "Lab 4: Spatial Predictive Modeling of Residential Burglary Using 311 Service Request Data (Garbage Cans) in Chicago"
           - href: lab/lab_5/lab_5.qmd
             text: "Lab 5: Bikeshare SpaceTime Prediction"
+          - href: lab/lab_6/PPA_FinalAssignment.qmd
+            text: "Final Challenge: Identifying Financially Vulnerable Homeowners: A Predictive Model for Property Tax Delinquency in Philadelphia"
             
             
 

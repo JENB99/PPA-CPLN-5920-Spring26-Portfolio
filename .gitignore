@@ -44,3 +44,63 @@ Thumbs.db
 # Large Data Files
 # =======================
 lab/lab_4/lab_4/data/garbagecart.csv
+
+
+# ── R SESSION FILES ──────────────────────────────────────────────────────────
+.RDataTmp
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# ── MACOS SYSTEM FILES ───────────────────────────────────────────────────────
+__MACOSX/
+.DS_Store
+
+# ── ENTIRE DATA FOLDER ───────────────────────────────────────────────────────
+data/
+
+# ── SPECIFIC DATA FILES (if ever outside data/) ──────────────────────────────
+geocoded_output.*
+opa_properties_for_FINAL.*
+opa_properties_public.*
+opa_properties_public.geojson
+phil_properties.*
+final_data_panel.*
+houses_clean.*
+midterm_complete_data.*
+incidents_part1_part2_2019.*
+indego-trips-2024-q4.*
+indego-trips-2025-q1.*
+abandoned_cars_2017.*
+districts.geojson
+hospitals.geojson
+polling_places*
+burglaries.*
+City_Limits.*
+philadelphia-neighborhoods.*
+Pennsylvania_County_Boundaries*/
+polling_places/
+tl_2022_42_cousub/
+
+# ── ZIP FILES ────────────────────────────────────────────────────────────────
+*.zip
+
+# ── GENERATED OUTPUTS ────────────────────────────────────────────────────────
+outputs/
+presentation_pngs/
+*.png
+
+# ── QUARTO RENDER OUTPUTS ────────────────────────────────────────────────────
+_site/
+_book/
+_freeze/
+*.html
+*_files/
+
+# ── OS FILES ─────────────────────────────────────────────────────────────────
+Thumbs.db
+desktop.ini
+```
+
+This is built directly from your screenshots so every file and folder you have is covered. Your `PPA_FinalAssignment.qmd`, `lab6.Rproj`, and `_quarto.yml` will still be tracked by git so your collaborators can render.

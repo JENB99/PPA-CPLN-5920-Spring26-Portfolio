@@ -2,159 +2,101 @@
 
 Welcome to CPLN5920/MUSA5080! This guide will help you set up your personal portfolio repository for the semester.
 
-## What You're Building
+## What We're Building
 
-- Your own portfolio repository on GitHub
-- A live website showcasing your work
-- A place to document your learning journey  
+- A portfolio repository on GitHub
+- A live website showcasing our  work
+- A place to document our learning journey  
 
-## Example:
+```markdown
+# CPLN 5920 / MUSA 5080 — Predictive Analytics for Planning
+## Spring 2026 | University of Pennsylvania
 
-Here is one I made: **[Allison's sample portfolio](https://allisonlass.github.io/cpln-5902-student-site-example)** 
-  
-
-## Prerequisites
-
-- [ ] A GitHub account ([create one here](https://github.com/join) if needed)
-- [ ] Quarto installed on your computer ([download here](https://quarto.org/docs/get-started/))
-- [ ] R and RStudio installed
-
-## Step-by-Step Setup
-
-### Step 1: Customize Your Repository
-
-You should already have a repository that you created when you clicked on the link that I sent you.
-If not, go to that link again and click the "Use this template" button and then "Create a new repository."
-Now let's personalize it.
-
-#### 1.1 Edit Your Site Title
-1. Click on the `_quarto.yml` file
-2. Click the pencil icon (✏️) to edit
-3. Change `"Your Name - CPLN 5920 Portfolio"` to include your actual name
-4. Example: `"Jane Smith - CPLN 5920 Portfolio"`
-5. Click **"Commit changes"** at the bottom
-
-#### 1.2 Update Your Homepage
-1. Click on the `index.qmd` file
-2. Click the pencil icon (✏️) to edit
-3. Update the **"About Me"** section with your information:
-   - Your name and background
-   - Your email address
-   - Your GitHub username
-   - Why you're taking this course
-4. Click **"Commit changes"**
-
-#### 1.3  Quarto Render
-This step creates a docs folder and an index.html file. You need to make sure
-these exist for your website to show up.
-
-1. Click render button in RStudio or run `quarto render` in your command line
-2. Check the docs folder for index.html file
-
-### Step 2: Enable GitHub Pages
-
-This step makes your portfolio visible as a live website!
-
-1. **Go to Settings**: Click the "Settings" tab at the top of your repository
-2. **Find Pages**: Scroll down and click "Pages" in the left sidebar
-3. **Configure Source**: 
-   - Source: Select "Deploy from a branch"
-   - Branch: Select "main" 
-   - Folder: Select "/ docs"
-4. **Save**: Click "Save"
-5. **Wait**: GitHub will show a message that your site is being built (this takes 1-5 minutes)
-
-### Step 3: Test Your Website
-
-1. **Find Your URL**: After a few minutes, GitHub will show your website URL at the top of the Pages settings
-   - It will look like: `https://yourusername.github.io/repository-name`
-2. **Visit Your Site**: Click the link to see your live portfolio!
-3. **Bookmark It**: Save this URL - you'll submit it to Canvas
-
-
-## How to Work on Your Portfolio Locally
-
-You can work entirely online, but I don't suggest it. To work on your computer 
-and see changes before publishing, you will use either use GitHub Desktop 
-or the terminal in RStudio (there are some other ways, too, but these are probably
-the easiest). You may be most comfortable with GitHub Desktop at first, but
-eventually you will probably find it faster to use the terminal.
-
-In the terminal, this is some relevant code:
-**To follow the steps using the bash code, you need to install git (which is different GitHub Desktop) and finish the git client setup**
-
-### Clone Your Repository
-```bash
-# Replace [your-repo-url] with your actual repository URL. Not your website, but the github repo.
-git clone [your-repo-url]
-cd [your-repository-name]
-```
-
-### Make Changes and Preview
-This code renders your qmd file as a html file and saves it in your \docs folder
-```bash
-# Edit your files using RStudio
-# Preview your changes:
-quarto render --to html
-quarto preview
-#Hit Cntrl-C or Cmd-C when you are done to stop the preview
-
-# When ready, save your changes:
-git add .
-git commit -m "Update portfolio"
-git push
-```
-
-Your live website will automatically update when you push changes!
-
-
-## Troubleshooting
-
-### My website isn't showing up
-- **Wait longer**: GitHub Pages can take up to 10 minutes to build
-- **Check Actions tab**: Look for any red X marks indicating build failures
-- **Verify Pages settings**: Make sure you selected "main" branch and "/docs" folder
-
-### I can't edit files
-- **Check permissions**: Make sure you're in YOUR repository, not the template
-- **Sign in**: Ensure you're signed into GitHub
-
-### My Quarto site won't render
-- **Check YAML syntax**: Make sure your `_quarto.yml` file has proper formatting
-- **Verify file names**: Files should end in `.qmd` not `.md`
-- **Look at error messages**: The Actions tab will show specific error details
-
-### I made a mistake
-- **Don't panic!** Every change is tracked in Git
-- **See history**: Click the "History" button on any file to see previous versions
-- **Revert changes**: You can always go back to a previous version
-
-## Pro Tips
-
-1. **Commit often**: Save your work frequently with descriptive commit messages
-2. **Use branches**: For major changes, create a new branch and merge when ready
-3. **Preview locally**: Use `quarto preview` to see changes before publishing
-4. **Keep it professional**: This portfolio can be shared with future employers!
-5. **Document everything**: Good documentation is as important as good analysis
-
-## Additional Resources
-
-- [Quarto Documentation](https://quarto.org/docs/)
-- [GitHub Docs](https://docs.github.com/)
-- [Markdown Guide](https://www.markdownguide.org/)
-- [Git Tutorial](https://learngitbranching.js.org/)
-
-
-## Checklist
-
-Before submitting, make sure you've:
-- [ ] Customized `_quarto.yml` with your name
-- [ ] Updated `index.qmd` with your information
-- [ ] Enabled GitHub Pages
-- [ ] Verified your website loads correctly
-- [ ] Submitted your URL to Canvas
+This repository contains lab assignments and the final project for CPLN 5920/MUSA 5080 public policy analytics for urban planning at the University of Pennsylvania. The labs builds progressively from foundational data skills toward applied spatial and predictive modeling, culminating in a policy-relevant final challenge.
 
 ---
 
-**Need help? Don't struggle alone - you are strongly encouraged to work with your <br>
-classmates. You can also reach out during office hours or in class!**
+## Course Portfolio Structure
+
+Each lab builds on the last, introducing new methods and tools that are applied in the final challenge.
+
+| Lab | Title | Key Skills |
+|-----|-------|------------|
+| Lab 0 | dplyr Basics | Data wrangling, tidyverse fundamentals |
+| Lab 1 | Census Data Quality for Policy Decisions | tidycensus, margin of error, ACS reliability |
+| Lab 2 | Spatial Analysis and Visualization | sf, spatial joins, choropleth mapping |
+| Lab 3 | Predicting Home Sales Price | Linear regression, feature engineering, train/test splits |
+| Lab 4 | Spatial Predictive Modeling of Residential Burglary | Poisson regression, fishnet, Local Moran's I, kNN |
+| Lab 5 | Bikeshare SpaceTime Prediction | Panel data, temporal features, cross-validation |
+| **Final** | **Identifying Financially Vulnerable Homeowners** | **Logistic regression, class imbalance, equity analysis** |
+
+---
+
+## Final Challenge: Identifying Financially Vulnerable Homeowners: A Predictive Framework for Property Tax Delinquency in Philadelphia
+
+### Overview
+
+This report develops a predictive framework to identify Philadelphia properties at risk of becoming property tax delinquent before delinquency actually occurs, particularly during periods of economic hardship such as COVID-19. Property tax delinquency in Philadelphia increased from approximately $165 million to $178.5 million between 2024 and 2025, creating challenges for both municipal services and the School District of Philadelphia, which relies heavily on property tax revenue.
+
+The goal of this project is not to create a tool for enforcement, but to provide the City with a way to identify financially vulnerable households earlier so that outreach and assistance can happen before penalties and debt begin to accumulate.
+
+### Data
+
+The project combined multiple sources of data including property tax delinquency records, OPA property characteristics, ACS census data at the block group and census tract levels, crime data, and neighborhood-level spatial features including Business Improvement Districts, Empowerment Zones, Housing Counseling Agencies, affordable housing developments, free meal sites, and parks.
+
+### Methods
+
+Several logistic regression models were tested throughout the analysis. One of the biggest challenges was the severe class imbalance in the dataset, since fewer than 1% of properties became delinquent. To better account for temporal patterns, the model incorporated yearly census data and used a validation framework where models were first trained on 2010–2018 data and validated on 2019 data before being retrained on 2010–2019 data and tested on 2020 outcomes.
+
+After testing multiple approaches, **Model 8** produced the strongest results by combining sample rebalancing and inverse class weighting. The model achieved a sensitivity score of 84.2%, correctly identifying 3,430 properties that later became delinquent in 2020 while missing only 225.
+
+### Key Findings
+
+- Delinquency increased significantly between 2010 and 2020, remaining concentrated in areas facing greater economic hardship
+- Properties located within Business Improvement Districts were generally less likely to become delinquent
+- Properties located near affordable housing developments inside Empowerment Zones were more likely to experience delinquency
+- The model performed most consistently in mid-to-high income neighborhoods where delinquency tends to be transient and event-driven
+- The model performed less effectively in some of Philadelphia's lowest-income neighborhoods, reflecting deeper structural inequalities tied to property tax delinquency
+
+### Policy Value
+
+Even with these limitations, the model provides meaningful policy value. Rather than being used for punitive enforcement, the model is best suited for low-cost interventions such as mailed outreach about payment plans, hardship exemptions, and housing counseling programs. This project demonstrates how predictive modeling can help the City of Philadelphia take a more proactive and equitable approach to addressing property tax delinquency while still recognizing the need for broader long-term support in economically vulnerable communities.
+
+---
+
+## Authors of Final Challenge
+
+**Jenny Brar · Maude Ceruso · Shubhanga Satyal · Vedika Jawa**
+Master of Urban Spatial Analytics | Weitzman School of Design
+University of Pennsylvania | Spring 2026
+
+---
+
+### Clone and Render
+
+```bash
+git clone https://github.com/JENB99/PPA-CPLN-5920-Spring26-Portfolio.git
+cd PPA-CPLN-5920-Spring26-Portfolio
+quarto render --to html
+quarto preview
+```
+
+### Data
+
+Data files are not tracked in this repository due to file size. The `data/` folder is listed in `.gitignore`. To reproduce the analysis, download the following sources:
+
+- [OPA Real Estate Tax Delinquencies: OpenDataPhilly](https://data.phila.gov/visualizations/real-estate-tax-delinquencies)
+- [OPA Property Characteristics: OpenDataPhilly](https://opendataphilly.org)
+- ACS 5-Year Estimates 2010–2020 via `tidycensus`
+- Philadelphia City Limits, Neighborhoods, BIDs, Empowerment Zones, HCAs: OpenDataPhilly
+- Philadelphia Crime Incidents 2019: OpenDataPhilly
+
+---
+
+## Additional Sources
+
+- [Quarto Documentation](https://quarto.org/docs/)
+- [GitHub Docs](https://docs.github.com/)
+- [tidycensus Documentation](https://walker-data.com/tidycensus/)
+- [sf Package Documentation](https://r-spatial.github.io/sf/)
+```
